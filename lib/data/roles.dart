@@ -1,4 +1,0 @@
-enum Roles {
-  defaultUser,
-  adminUser
-}
