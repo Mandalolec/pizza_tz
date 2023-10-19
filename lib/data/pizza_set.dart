@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:pizza_tz/domain/models/pizza.dart';
+import 'package:pizza_tz/data/model/pizza.dart';
 
 class PizzaList with ChangeNotifier {
-  final List<Pizza> _pizzaList = <Pizza> [];
+  final List<Pizza> _pizzaList;
 
   List<Pizza> get getPizzas => _pizzaList;
+  set setPizzas(value) => _pizzaList.addAll(value);
 
-  final List<int> _indexesPizzasList = <int> [];
+  final List<int> _indexesPizzasList = <int>[];
 
   set addPizza(Pizza pizza) {
     createIndexesPizzasList();
@@ -20,4 +21,13 @@ class PizzaList with ChangeNotifier {
       _indexesPizzasList.add(item.idPizza);
     }
   }
+
+  PizzaList.fromJson(Map<String, dynamic> json)
+      : _pizzaList = List<dynamic>.from(json['list_pizza'])
+            .map((i) => Pizza.fromJson(i))
+            .toList();
+
+  Map<String, dynamic> toJson() => {
+    'list_pizza': _pizzaList.map((item) => item.toJson()).toList()
+  };
 }

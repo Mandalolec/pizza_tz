@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../domain/models/pizza.dart';
+import 'package:pizza_tz/data/model/pizza.dart';
 
 class ShoppingBasket with ChangeNotifier {
   final List<Pizza> _pizzaInBasket = [];

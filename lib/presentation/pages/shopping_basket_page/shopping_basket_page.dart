@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pizza_tz/domain/bloc/counter_purchase_cubit/counter_purchase_cubit.dart';
-import 'package:pizza_tz/domain/models/pizza.dart';
-
+import 'package:pizza_tz/data/model/pizza.dart';
 
 class ShoppingBasketPage extends StatelessWidget {
   const ShoppingBasketPage({super.key});
@@ -15,8 +14,149 @@ class ShoppingBasketPage extends StatelessWidget {
     return const Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
-          child: ListPurchase(),
+          child: Column(
+            children: [
+              Expanded(
+                flex: 1,
+                  child: ShoppingBasketHeader()
+              ),
+              Expanded(
+                flex: 6,
+                child: ListPurchase(),
+              ),
+              Expanded(flex: 2, child: PlaceOrderButton())
+            ],
+          ),
         ));
+  }
+}
+
+class ShoppingBasketHeader extends StatefulWidget {
+  const ShoppingBasketHeader({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return ShoppingBasketHeaderWidget();
+  }
+}
+
+class ShoppingBasketHeaderWidget extends State<ShoppingBasketHeader> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: Row(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+            color: Colors.redAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
+            child: IconButton(
+                padding: const EdgeInsets.only(left: 10),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.arrow_back_ios, size: 30, color: Colors.redAccent),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(left: 10),
+            child: Text(
+                "Order details",
+            style: TextStyle(
+                fontSize: 26,
+                fontFamily: GoogleFonts.lato().fontFamily,
+                fontWeight: FontWeight.bold
+            ),),
+          )
+        ],
+      ),
+    );
+  }
+
+}
+
+class PlaceOrderButton extends StatefulWidget {
+  const PlaceOrderButton({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return PlaceOrderWidget();
+  }
+}
+
+class PlaceOrderWidget extends State<PlaceOrderButton> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 20),
+      decoration: BoxDecoration(
+          color: Colors.redAccent, borderRadius: BorderRadius.circular(30)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          const Padding(
+            padding: EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
+            child: Divider(
+              color: Colors.white,
+              thickness: 2,
+            ),
+          ),
+          Stack(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(left: 20),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Total",
+                  textDirection: TextDirection.ltr,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontFamily: GoogleFonts.lato().fontFamily,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(right: 20),
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "\$52",
+                  textDirection: TextDirection.ltr,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontFamily: GoogleFonts.lato().fontFamily,
+                      fontWeight: FontWeight.bold),
+                ),
+              )
+            ],
+          ),
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.all(15),
+              child: ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                          )
+                      ),
+                    elevation: MaterialStateProperty.all(0),
+                  ),
+                  onPressed: () {},
+                  child: Text(
+                    "Place my order",
+                    style: TextStyle(color: Colors.redAccent, fontSize: 18, fontFamily: GoogleFonts.lato().fontFamily, fontWeight: FontWeight.bold),
+                  )),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -117,7 +257,9 @@ class ListPurchaseWidget extends State<ListPurchase> {
                               icon: Icon(
                                 Icons.remove_circle,
                                 size: 30,
-                                color: (state > 1 ? Colors.redAccent : Colors.grey),
+                                color: (state > 1
+                                    ? Colors.redAccent
+                                    : Colors.grey),
                               )),
                           Text(
                             state.toString(),

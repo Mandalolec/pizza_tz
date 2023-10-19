@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:badges/badges.dart' as badges;
 
+import '../shopping_basket_page/shopping_basket_page.dart';
+
 class MarketHeader extends StatefulWidget {
   const MarketHeader({super.key});
 
@@ -29,7 +31,7 @@ class MarketHeaderWidget extends State<MarketHeader> {
                 textDirection: TextDirection.ltr,
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 26,
                     fontFamily: GoogleFonts.lato().fontFamily,
                     fontWeight: FontWeight.bold
                 ),
@@ -46,7 +48,12 @@ class MarketHeaderWidget extends State<MarketHeader> {
                   child: IconButton(
                     icon: const Icon(Icons.shopping_cart),
                     iconSize: 26,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ShoppingBasketPage()),
+                      );
+                    },
                   ),
                 ),
                 Container(
