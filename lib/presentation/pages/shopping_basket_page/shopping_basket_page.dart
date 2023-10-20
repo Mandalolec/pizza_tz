@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pizza_tz/domain/bloc/counter_purchase_cubit/counter_purchase_cubit.dart';
-import 'package:pizza_tz/data/model/pizza.dart';
 
 class ShoppingBasketPage extends StatelessWidget {
   const ShoppingBasketPage({super.key});
@@ -170,12 +169,11 @@ class ListPurchase extends StatefulWidget {
 }
 
 class ListPurchaseWidget extends State<ListPurchase> {
-  final List<Pizza> _purchase = getPurchaseList();
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: _purchase.length,
+        itemCount: 0,
         itemBuilder: (context, index) {
           return Container(
             margin:
@@ -212,7 +210,7 @@ class ListPurchaseWidget extends State<ListPurchase> {
                           //padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            _purchase[index].namePizza,
+                            '',
                             textDirection: TextDirection.ltr,
                             textAlign: TextAlign.left,
                             style: TextStyle(
@@ -225,7 +223,7 @@ class ListPurchaseWidget extends State<ListPurchase> {
                         //padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          _purchase[index].pricePizza,
+                          '',
                           textDirection: TextDirection.ltr,
                           textAlign: TextAlign.left,
                           style: TextStyle(
@@ -309,16 +307,6 @@ class ListPurchaseWidget extends State<ListPurchase> {
             color: Colors.grey,
           ));
     }
-  }
-
-  static List<Pizza> getPurchaseList() {
-    List<Pizza> purchase = [
-      Pizza(
-          idPizza: 1, namePizza: "Pizaras", pricePizza: "\$20", countPizza: 1),
-      Pizza(
-          idPizza: 2, namePizza: "Pepperoni", pricePizza: "\$30", countPizza: 2)
-    ];
-    return purchase;
   }
 
   String getRandomPizzaImageFromAssets() {

@@ -1,30 +1,34 @@
-import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pizza_tz/data/model/pizza.dart';
-import 'package:pizza_tz/domain/repository/pizza_repository.dart';
+import 'package:stream_transform/stream_transform.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:pizza_repository/pizza_repository.dart';
 
 part 'pizza_event.dart';
+
 part 'pizza_state.dart';
 
-class PizzaBloc extends Bloc<PizzaEvent, PizzaState> {
-  final PizzaRepository pizzaRepository;
+EventTransformer<E> debounceDroppable<E>(Duration duration) {
+  return (events, mapper) {
+    return droppable<E>().call(events.debounce(duration), mapper);
+  };
+}
 
-  PizzaBloc(super.initialState, {
-    required this.pizzaRepository
-  }) {
-    on<PizzaLoadEvent>(mapEventToState);
+class PizzaBloc extends Bloc<PizzaEvent, PizzaState> {
+  PizzaBloc({required PizzaRepository pizzaRepository})
+      : _pizzaRepository = pizzaRepository,
+        super(PizzaState()) {
+    on<PizzaLoadEvent>(
+      _getPizza,
+      transformer: debounceDroppable(
+        const Duration(microseconds: 300),
+      ),
+    );
   }
 
-  get initialState => PizzaInitialState();
+  late final PizzaRepository _pizzaRepository;
 
-
-  Stream<PizzaState> mapEventToState(event, emit) async* {
-    try {
-      yield PizzaLoadingState();
-      final pizzas = await pizzaRepository.readPizzaList();
-      yield PizzaLoadedState(pizzaList: pizzas.getPizzas);
-    } catch (error) {
-      yield PizzaErrorState();
-    }
+  _getPizza(PizzaLoadEvent event, Emitter<PizzaState> emit) async {
+    final pizzas = await _pizzaRepository.readPizzaList();
+    emit(PizzaState(pizzas: pizzas.getPizzas));
   }
 }

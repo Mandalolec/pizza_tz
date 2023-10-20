@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:pizza_tz/domain/bloc/pizza_bloc/pizza_bloc.dart';
 
 import '../shopping_basket_page/shopping_basket_page.dart';
 
@@ -61,7 +63,9 @@ class MarketHeaderWidget extends State<MarketHeader> {
                   child: IconButton(
                     icon: const Icon(Icons.person),
                     iconSize: 26,
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<PizzaBloc>().add(PizzaLoadEvent());
+                    },
                   ),
                 )
               ],

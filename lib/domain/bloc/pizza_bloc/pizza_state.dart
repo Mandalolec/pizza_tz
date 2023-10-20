@@ -1,16 +1,9 @@
 part of 'pizza_bloc.dart';
 
-abstract class PizzaState {}
+class PizzaState {
+  final List<Pizza> pizzas;
 
-class PizzaInitialState extends PizzaState {}
-
-class PizzaLoadingState extends PizzaState {}
-
-class PizzaLoadedState extends PizzaState {
-  final List<Pizza> pizzaList;
-  PizzaLoadedState({
-    required this.pizzaList
+  PizzaState({
+    this.pizzas = const [],
   });
 }
-
-class PizzaErrorState extends PizzaState {}

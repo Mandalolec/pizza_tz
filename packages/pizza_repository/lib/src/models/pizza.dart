@@ -1,4 +1,3 @@
-
 class Pizza {
   final int idPizza;
   final String namePizza;
@@ -12,18 +11,20 @@ class Pizza {
     required this.countPizza
   });
 
-  Pizza.fromJson(Map<String, dynamic> json)
-      : idPizza = json['id_pizza'],
-        namePizza = json['name_pizza'],
-        pricePizza = json['price_pizza'],
-        countPizza = json['count_pizza'];
+  factory Pizza.fromJson(Map<String, dynamic> json) {
+    return Pizza(idPizza: json['id_pizza'],
+        namePizza: json['name_pizza'],
+        pricePizza: json['price_pizza'],
+        countPizza: json['count_pizza']
+    );
+  }
 
   Map<String, dynamic> toJson() => {
-        'id_pizza': idPizza,
-        'name_pizza': namePizza,
-        'price_pizza': pricePizza,
-        'count_pizza': countPizza
-      };
+    'id_pizza': idPizza,
+    'name_pizza': namePizza,
+    'price_pizza': pricePizza,
+    'count_pizza': countPizza
+  };
 
   @override
   String toString() {
