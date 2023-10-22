@@ -88,6 +88,8 @@ class PlaceOrderWidget extends StatefulWidget {
 class PlaceOrderState extends State<PlaceOrderWidget> {
   @override
   Widget build(BuildContext context) {
+    double totalAmount =
+        context.select((PizzaBloc bloc) => bloc.state.totalAmount);
     return Container(
       margin: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 20),
       decoration: BoxDecoration(
@@ -124,7 +126,7 @@ class PlaceOrderState extends State<PlaceOrderWidget> {
                 padding: const EdgeInsets.only(right: 20),
                 alignment: Alignment.centerRight,
                 child: Text(
-                  "\$52",
+                  "\$$totalAmount",
                   textDirection: TextDirection.ltr,
                   textAlign: TextAlign.left,
                   style: TextStyle(
@@ -148,7 +150,8 @@ class PlaceOrderState extends State<PlaceOrderWidget> {
                     )),
                     elevation: MaterialStateProperty.all(0),
                   ),
-                  onPressed: () {},
+                  onPressed: () =>
+                      context.read<PizzaBloc>().add(GetTotalAmountInBasket()),
                   child: Text(
                     "Place my order",
                     style: TextStyle(
@@ -231,7 +234,7 @@ class ListPurchaseState extends State<ListPurchaseWidget> {
                         //padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          pizza.pricePizza,
+                          '\$${pizza.pricePizza}',
                           textDirection: TextDirection.ltr,
                           textAlign: TextAlign.left,
                           style: TextStyle(
@@ -246,7 +249,8 @@ class ListPurchaseState extends State<ListPurchaseWidget> {
                 ],
               ),
               BlocProvider(
-                create: (context) => CounterPurchaseBloc(pizza.countPizza)..add(CounterInitEvent()),
+                create: (context) => CounterPurchaseBloc(pizza.countPizza)
+                  ..add(CounterInitEvent()),
                 child: Container(
                   // Counter
                   padding: const EdgeInsets.all(30),
@@ -257,9 +261,25 @@ class ListPurchaseState extends State<ListPurchaseWidget> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
-                            onPressed: () => context
-                                .read<CounterPurchaseBloc>()
-                                .add(CounterDecrementEvent()),
+                            onPressed: () {
+                              context.read<CounterPurchaseBloc>().add(
+                                    CounterDecrementEvent(),
+                                  );
+
+                              if (state.count == 2) {
+                                context.read<PizzaBloc>().add(
+                                      SetCountPizzaInBasket(1, index),
+                                    );
+                              } else if (state.count > 2){
+                                context.read<PizzaBloc>().add(
+                                      SetCountPizzaInBasket(
+                                          state.count - 1, index),
+                                    );
+                              }
+                              context.read<PizzaBloc>().add(
+                                    GetTotalAmountInBasket(),
+                                  );
+                            },
                             icon: Icon(
                               Icons.remove_circle,
                               size: 30,
@@ -279,15 +299,26 @@ class ListPurchaseState extends State<ListPurchaseWidget> {
                                 fontWeight: FontWeight.bold),
                           ),
                           IconButton(
-                              onPressed: () =>
-                                  context.read<CounterPurchaseBloc>().add(
-                                        CounterIncrementEvent(),
-                                      ),
-                              icon: const Icon(
-                                Icons.add_circle,
-                                size: 30,
-                                color: Colors.redAccent,
-                              ))
+                            onPressed: () {
+                              context.read<CounterPurchaseBloc>().add(
+                                    CounterIncrementEvent(),
+                                  );
+
+                              context.read<PizzaBloc>().add(
+                                    SetCountPizzaInBasket(
+                                        state.count + 1, index),
+                                  );
+
+                              context.read<PizzaBloc>().add(
+                                    GetTotalAmountInBasket(),
+                                  );
+                            },
+                            icon: const Icon(
+                              Icons.add_circle,
+                              size: 30,
+                              color: Colors.redAccent,
+                            ),
+                          )
                         ],
                       );
                     },
@@ -297,26 +328,6 @@ class ListPurchaseState extends State<ListPurchaseWidget> {
             ]),
           );
         });
-  }
-
-  IconButton getRemoveIcon(int counter) {
-    if (counter != 0) {
-      return IconButton(
-          onPressed: () => context.read<CounterPurchaseBloc>().add(CounterDecrementEvent()),
-          icon: const Icon(
-            Icons.remove_circle,
-            size: 30,
-            color: Colors.pink,
-          ));
-    } else {
-      return IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.remove_circle,
-            size: 30,
-            color: Colors.grey,
-          ));
-    }
   }
 
   String getRandomPizzaImageFromAssets() {

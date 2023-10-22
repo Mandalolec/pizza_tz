@@ -58,6 +58,7 @@ class MarketHeaderWidgetState extends State<MarketHeaderWidget> {
                         ),
                       );
                       context.read<PizzaBloc>().add(LoadPizzasInBasketEvent());
+                      context.read<PizzaBloc>().add(GetTotalAmountInBasket());
                     },
                   ),
                 ),

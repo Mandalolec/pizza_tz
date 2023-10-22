@@ -42,9 +42,9 @@ class ShoppingBasketModel with ChangeNotifier {
   int get pizzaInBasketCount => _pizzaInBasket.length;
 
   double get totalAmount {
-    var total = 0.0;
+    double total = 0.0;
     for (var pizza in _pizzaInBasket) {
-      total += (pizza.pricePizza * pizza.countPizza) as double;
+      total += (double.parse(pizza.pricePizza) * pizza.countPizza);
     }
     return total;
   }

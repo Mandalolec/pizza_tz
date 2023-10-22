@@ -6,6 +6,14 @@ class LoadPizzasInMarketEvent extends PizzaEvent {}
 
 class LoadPizzasInBasketEvent extends PizzaEvent {}
 
+class GetTotalAmountInBasket extends PizzaEvent {}
+
+class SetCountPizzaInBasket extends PizzaEvent {
+  final int count;
+  final int position;
+  SetCountPizzaInBasket(this.count,this.position);
+}
+
 class AddPizzaInMarketEvent extends PizzaEvent {
   final int position;
   AddPizzaInMarketEvent(this.position);
@@ -17,3 +25,5 @@ class AddPizzaInBasketEvent extends PizzaEvent {
 }
 
 class AddPizzaMockForMarketInAdminEvent extends PizzaEvent {}
+
+
