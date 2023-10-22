@@ -7,16 +7,16 @@ import 'package:bloc_test/bloc_test.dart';
 
 void main() {
   group("Тесты с данными", () {
-    final repos = PizzaRepository();
+    final repos = PizzaFromLocalJsonFileRepository();
 
     test("Получение данных через репозиторий", () async {
-      PizzaList list = await repos.readPizzaList();
+      PizzaListModel list = await repos.readPizzaList();
       expect(2, list.getPizzas.length);
       debugPrint(list.getPizzas.toString());
     });
 
     test("Добавление данных в json", () async {
-      PizzaList list = await repos.readPizzaList();
+      PizzaListModel list = await repos.readPizzaList();
       repos.writePizzaList(list);
       debugPrint(list.getPizzas.toString());
       list = await repos.readPizzaList();
@@ -24,7 +24,7 @@ void main() {
     });
 
     test("Получение данных через репозиторий по отдельности", () async {
-      PizzaList list = await repos.readPizzaList();
+      PizzaListModel list = await repos.readPizzaList();
       for (Pizza item in list.getPizzas) {
         expect("{idPizza = 1, namePizza = PapaRonya, pricePizza = \$10000, countPizza = 1}",  list.getPizzas.first.toString());
         debugPrint(item.toString());
@@ -33,7 +33,7 @@ void main() {
   });
 
   group("Bloc тесты", () {
-    final repos = PizzaRepository();
+    final repos = PizzaFromLocalJsonFileRepository();
     blocTest(
       'Emit [state] when event is added',
       build: () => PizzaBloc(pizzaRepository: repos),

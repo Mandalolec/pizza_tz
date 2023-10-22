@@ -14,7 +14,7 @@ EventTransformer<E> debounceDroppable<E>(Duration duration) {
 }
 
 class PizzaBloc extends Bloc<PizzaEvent, PizzaState> {
-  PizzaBloc({required PizzaRepository pizzaRepository})
+  PizzaBloc({required PizzaFromLocalJsonFileRepository pizzaRepository})
       : _pizzaRepository = pizzaRepository,
         super(PizzaState()) {
     on<PizzaLoadEvent>(
@@ -25,7 +25,7 @@ class PizzaBloc extends Bloc<PizzaEvent, PizzaState> {
     );
   }
 
-  late final PizzaRepository _pizzaRepository;
+  late final PizzaFromLocalJsonFileRepository _pizzaRepository;
 
   _getPizza(PizzaLoadEvent event, Emitter<PizzaState> emit) async {
     final pizzas = await _pizzaRepository.readPizzaList();

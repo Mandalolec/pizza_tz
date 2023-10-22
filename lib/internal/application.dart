@@ -11,10 +11,10 @@ class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      create: (context) => PizzaRepository(),
+      create: (context) => PizzaFromLocalJsonFileRepository(),
       child: BlocProvider(
         create: (context) => PizzaBloc(
-          pizzaRepository: RepositoryProvider.of<PizzaRepository>(context),
+          pizzaRepository: RepositoryProvider.of<PizzaFromLocalJsonFileRepository>(context),
         )..add(PizzaLoadEvent()),
         child: MaterialApp(
             title: 'Demo',

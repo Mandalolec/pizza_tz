@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pizza.dart';
 
-class PizzaList with ChangeNotifier {
+class PizzaListModel with ChangeNotifier {
   final List<Pizza> _pizzaList;
 
   List<Pizza> get getPizzas => _pizzaList;
@@ -22,7 +22,7 @@ class PizzaList with ChangeNotifier {
     }
   }
 
-  PizzaList.fromJson(Map<String, dynamic> json)
+  PizzaListModel.fromJson(Map<String, dynamic> json)
       : _pizzaList = List<dynamic>.from(json['list_pizza'])
       .map((i) => Pizza.fromJson(i))
       .toList();
