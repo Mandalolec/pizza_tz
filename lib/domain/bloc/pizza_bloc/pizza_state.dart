@@ -1,9 +1,21 @@
 part of 'pizza_bloc.dart';
 
 class PizzaState {
-  final List<Pizza> pizzas;
+  final List<Pizza> pizzasInMarket;
+  final List<Pizza> pizzasInBasket;
 
   PizzaState({
-    this.pizzas = const [],
+    this.pizzasInMarket = const [],
+    this.pizzasInBasket = const [],
   });
+
+  PizzaState copyWith({
+    List<Pizza>? pizzasInMarket,
+    List<Pizza>? pizzasInBasket,
+  }) {
+    return PizzaState(
+      pizzasInMarket: pizzasInMarket ?? this.pizzasInMarket,
+      pizzasInBasket: pizzasInBasket ?? this.pizzasInBasket,
+    );
+  }
 }

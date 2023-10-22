@@ -4,14 +4,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-
-import 'models/pizza_set.dart';
-
+import 'package:pizza_repository/pizza_repository.dart';
 
 abstract class IPizzaRepository {
-  Future<PizzaListModel> readPizzaList();
-
-  Future<void> writePizzaList(PizzaListModel pizzaList);
 }
 
 class PizzaFromLocalJsonFileRepository extends IPizzaRepository {
@@ -20,47 +15,75 @@ class PizzaFromLocalJsonFileRepository extends IPizzaRepository {
     return directory.path;
   }
 
-  Future<File> get _localFile async {
+  Future<File> get _localFileForMarket async {
     final path = await _localPath;
     return File('$path/pizza_list.json');
   }
 
-  Future<void> createLocalJsonOnDevice() async {
-    final file = File("${await _localPath}/pizza_list.json").create(recursive: true);
+  Future<File> get _localFileForBasket async {
+    final path = await _localPath;
+    return File('$path/basket_list.json');
+  }
+
+  Future<void> createLocalJsonOnDevice(String name) async {
+    final file = File("${await _localPath}/$name").create(recursive: true);
     var content = await rootBundle.loadString('assets/json/pizza_list.json');
     debugPrint("Content in root bundle: $content");
     final writer = await file;
     writer.writeAsString(content.toString());
   }
 
-  @override
-  Future<PizzaListModel> readPizzaList() async {
-    var file = await _localFile;
+  Future<PizzaListModel> getPizzasForMarket() async {
+    var file = await _localFileForMarket;
     final bool existFile = await file.exists();
     if (!existFile) {
-      await createLocalJsonOnDevice();
-      file = await _localFile;
-      return read(file);
+      await createLocalJsonOnDevice('pizza_list.json');
+      file = await _localFileForMarket;
+      return readFileFromPizzasInMarket(file);
     } else {
-      return read(file);
+      return readFileFromPizzasInMarket(file);
     }
   }
 
-  Future<PizzaListModel> read(File file) async {
+  Future<PizzaListModel> readFileFromPizzasInMarket(File file) async {
     final content = file.readAsStringSync();
     var jsonResponse = jsonDecode(content);
-    PizzaListModel pizzaList = PizzaListModel.fromJson(jsonResponse);
-    return pizzaList;
+    PizzaListModel pizzaListModel = PizzaListModel.fromJson(jsonResponse);
+    return pizzaListModel;
   }
 
-  @override
-  Future<void> writePizzaList(PizzaListModel pizzaList) async {
-    setJsonContent('');
-    setJsonContent(jsonEncode(pizzaList));
+  Future<ShoppingBasketModel> getPizzasForBasket() async {
+    var file = await _localFileForBasket;
+    final bool existFile = await file.exists();
+    if (!existFile) {
+      await createLocalJsonOnDevice('basket_list.json');
+      file = await _localFileForBasket;
+      return await readFileFromPizzasInBasket(file);
+    } else {
+      return await readFileFromPizzasInBasket(file);
+    }
   }
 
-  Future<void> setJsonContent(String content) async {
-    File file = await _localFile;
+  Future<ShoppingBasketModel> readFileFromPizzasInBasket(File file) async {
+    final content = await file.readAsString();
+    var jsonResponse = jsonDecode(content);
+    ShoppingBasketModel shoppingBasketModel = ShoppingBasketModel.fromJson(jsonResponse);
+    return shoppingBasketModel;
+  }
+
+  Future<void> writeInPizzasInMarket(PizzaListModel pizzaList) async {
+    await _setJsonContent('', await _localFileForMarket);
+    final pizzas = pizzaList.toJson();
+    await _setJsonContent(jsonEncode(pizzas), await _localFileForMarket);
+  }
+
+  Future<void> writeInPizzasInBasket(ShoppingBasketModel pizzaList) async {
+    await _setJsonContent('', await _localFileForBasket);
+    final pizzas = pizzaList.toJson();
+    await _setJsonContent(jsonEncode(pizzas), await _localFileForBasket);
+  }
+
+  Future<void> _setJsonContent(String content, File file) async {
     file.writeAsStringSync(content);
   }
 }

@@ -2,26 +2,40 @@ import 'package:flutter/foundation.dart';
 
 import 'pizza.dart';
 
-class ShoppingBasket with ChangeNotifier {
-  final List<Pizza> _pizzaInBasket = [];
+class ShoppingBasketModel with ChangeNotifier {
+  final List<Pizza> _pizzaInBasket;
 
-  List<Pizza> get pizzaInBasket => _pizzaInBasket;
+  List<Pizza> get getPizzaInBasket => _pizzaInBasket;
 
-  void addPizzaInBasket({required int idPizza, required String namePizza, required String pricePizza}) {
+  void addPizzaInBasket({
+    required String namePizza,
+    required String pricePizza,
+  }) {
     int countPizza = 1;
     Pizza pizza = Pizza(
-        idPizza: idPizza,
         namePizza: namePizza,
         pricePizza: pricePizza,
-        countPizza: countPizza
-    );
+        countPizza: countPizza);
 
-    _pizzaInBasket.add(pizza);
-    notifyListeners();
+    List<String> pizzasNameList = [];
+    for (var item in _pizzaInBasket) {
+      pizzasNameList.add(item.namePizza);
+    }
+
+    if (pizzasNameList.contains(pizza.namePizza)) {
+      for (var item in _pizzaInBasket) {
+        if (item.namePizza == pizza.namePizza) {
+          item.countPizza++;
+        }
+      }
+    } else {
+      _pizzaInBasket.add(pizza);
+      notifyListeners();
+    }
   }
 
-  void removePizzaInBasket(int position) {
-    _pizzaInBasket.removeAt(position);
+  void removePizzasInBasket() {
+    _pizzaInBasket.clear();
     notifyListeners();
   }
 
@@ -34,4 +48,13 @@ class ShoppingBasket with ChangeNotifier {
     }
     return total;
   }
+
+  ShoppingBasketModel.fromJson(Map<String, dynamic> json)
+      : _pizzaInBasket = List<dynamic>.from(json['list_pizza'])
+      .map((i) => Pizza.fromJson(i))
+      .toList();
+
+  Map<String, dynamic> toJson() => {
+    'list_pizza': _pizzaInBasket.map((item) => item.toJson()).toList()
+  };
 }

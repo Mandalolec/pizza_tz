@@ -15,7 +15,7 @@ class Application extends StatelessWidget {
       child: BlocProvider(
         create: (context) => PizzaBloc(
           pizzaRepository: RepositoryProvider.of<PizzaFromLocalJsonFileRepository>(context),
-        )..add(PizzaLoadEvent()),
+        )..add(LoadPizzasInMarketEvent()),
         child: MaterialApp(
             title: 'Demo',
             theme: ThemeData(

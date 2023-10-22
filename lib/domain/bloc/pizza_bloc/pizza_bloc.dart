@@ -17,8 +17,22 @@ class PizzaBloc extends Bloc<PizzaEvent, PizzaState> {
   PizzaBloc({required PizzaFromLocalJsonFileRepository pizzaRepository})
       : _pizzaRepository = pizzaRepository,
         super(PizzaState()) {
-    on<PizzaLoadEvent>(
-      _getPizza,
+    on<LoadPizzasInMarketEvent>(
+      _getPizzaInMarket,
+      transformer: debounceDroppable(
+        const Duration(microseconds: 300),
+      ),
+    );
+
+    on<LoadPizzasInBasketEvent>(
+      _getPizzaInBasket,
+      transformer: debounceDroppable(
+        const Duration(microseconds: 300),
+      ),
+    );
+
+    on<AddPizzaInBasketEvent>(
+      _addPizzaInBasket,
       transformer: debounceDroppable(
         const Duration(microseconds: 300),
       ),
@@ -27,8 +41,31 @@ class PizzaBloc extends Bloc<PizzaEvent, PizzaState> {
 
   late final PizzaFromLocalJsonFileRepository _pizzaRepository;
 
-  _getPizza(PizzaLoadEvent event, Emitter<PizzaState> emit) async {
-    final pizzas = await _pizzaRepository.readPizzaList();
-    emit(PizzaState(pizzas: pizzas.getPizzas));
+  _getPizzaInMarket(LoadPizzasInMarketEvent event, Emitter<PizzaState> emit) async {
+    final pizzas = await _pizzaRepository.getPizzasForMarket();
+    emit(state.copyWith(pizzasInMarket: pizzas.getPizzas));
+  }
+
+  _getPizzaInBasket(LoadPizzasInBasketEvent event, Emitter<PizzaState> emit) async {
+    final pizzas = await _pizzaRepository.getPizzasForBasket();
+    emit(state.copyWith(pizzasInBasket: pizzas.getPizzaInBasket));
+  }
+
+  _addPizzaInBasket(AddPizzaInBasketEvent event, Emitter<PizzaState> emit) async {
+    final marketPizzas = await _pizzaRepository.getPizzasForMarket();
+    final basketPizzas = await _pizzaRepository.getPizzasForBasket();
+    final index = event.position;
+
+
+    basketPizzas.addPizzaInBasket(
+        namePizza: marketPizzas.getPizzas[index].namePizza,
+        pricePizza: marketPizzas.getPizzas[index].pricePizza
+    );
+    marketPizzas.getPizzas.removeAt(index);
+
+    _pizzaRepository.writeInPizzasInMarket(marketPizzas);
+    _pizzaRepository.writeInPizzasInBasket(basketPizzas);
+
+    emit(state.copyWith(pizzasInMarket: marketPizzas.getPizzas, pizzasInBasket: basketPizzas.getPizzaInBasket));
   }
 }
