@@ -10,8 +10,8 @@ class ShoppingBasketModel with ChangeNotifier {
   void addPizzaInBasket({
     required String namePizza,
     required String pricePizza,
+    required int countPizza,
   }) {
-    int countPizza = 1;
     Pizza pizza = Pizza(
         namePizza: namePizza,
         pricePizza: pricePizza,
@@ -44,7 +44,14 @@ class ShoppingBasketModel with ChangeNotifier {
   double get totalAmount {
     double total = 0.0;
     for (var pizza in _pizzaInBasket) {
-      total += (double.parse(pizza.pricePizza) * pizza.countPizza);
+      double price;
+      try {
+        price = double.parse(pizza.pricePizza);
+      } catch (e) {
+        debugPrint(e.toString());
+        price = 0.0;
+      }
+      total += (price * pizza.countPizza);
     }
     return total;
   }

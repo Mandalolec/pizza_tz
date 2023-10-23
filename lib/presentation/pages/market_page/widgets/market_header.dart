@@ -1,10 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:pizza_tz/domain/bloc/pizza_bloc/pizza_bloc.dart';
-import 'package:pizza_tz/presentation/pages/admin_page/admin_page.dart';
 
-import '../../shopping_basket_page/shopping_basket_page.dart';
+part of '../market_page.dart';
 
 class MarketHeaderWidget extends StatefulWidget {
   const MarketHeaderWidget({super.key});
@@ -73,6 +68,7 @@ class MarketHeaderWidgetState extends State<MarketHeaderWidget> {
                         builder: (context) => const AdminPage(),
                       ),
                     );
+                    context.read<PizzaBloc>().add(GetPizzaMocksForMarketInAdminEvent());
                   },
                 )
               ],

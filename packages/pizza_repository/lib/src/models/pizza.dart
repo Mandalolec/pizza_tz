@@ -1,6 +1,6 @@
 class Pizza {
-  final String namePizza;
-  final String pricePizza;
+  String namePizza;
+  String pricePizza;
   int countPizza;
 
   Pizza({

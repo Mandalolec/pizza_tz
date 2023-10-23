@@ -86,4 +86,17 @@ class PizzaFromLocalJsonFileRepository extends IPizzaRepository {
   Future<void> _setJsonContent(String content, File file) async {
     file.writeAsStringSync(content);
   }
+
+  Future<List<Pizza>> searchPizza(String query) async {
+    final PizzaListModel pizzas = await getPizzasForMarket();
+    final List<Pizza> newPizzaList = [];
+
+    for (int i = 0; i < pizzas.getPizzas.length; i++) {
+      if (pizzas.getPizzas[i].namePizza.contains(query)) {
+        newPizzaList.add(pizzas.getPizzas[i]);
+      }
+    }
+
+    return newPizzaList;
+  }
 }

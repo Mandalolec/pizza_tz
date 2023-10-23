@@ -1,74 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pizza_repository/pizza_repository.dart';
+import 'package:pizza_tz/domain/bloc/counter_purchase_bloc/counter_purchase_bloc.dart';
+import 'package:pizza_tz/domain/bloc/pizza_bloc/pizza_bloc.dart';
+import 'package:pizza_tz/presentation/pages/market_page/market_page.dart';
 
-class AdminPage extends StatefulWidget {
+part 'widgets/admin_header.dart';
+part 'widgets/admin_list.dart';
+part 'widgets/save_button.dart';
+
+class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
 
   @override
-  State<AdminPage> createState() => _AdminPageState();
-}
-
-class _AdminPageState extends State<AdminPage> {
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
               flex: 1,
-              child: Container(
-                color: Colors.white,
-                child: Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.redAccent.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: IconButton(
-                        padding: const EdgeInsets.only(left: 10),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(Icons.arrow_back_ios,
-                            size: 30, color: Colors.pink),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        "Add pizza",
-                        style: TextStyle(
-                            fontSize: 26,
-                            fontFamily: GoogleFonts.lato().fontFamily,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const Spacer(),
-                    Container(
-                      margin: const EdgeInsets.all(10),
-                      child: IconButton(
-                        icon: const Icon(Icons.add_circle),
-                        iconSize: 30,
-                        color: Colors.pink,
-                        onPressed: () {},
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              child: AdminHeaderWidget(),
             ),
             Expanded(
-              flex: 8,
-              child: Container(
-                color: Colors.blue,
-              ),
-            )
+              flex: 7,
+              child: AdminListWidget(),
+            ),
+            Expanded(
+              flex: 1,
+              child: SaveButtonWidget(),
+            ),
           ],
         ),
       ),
     );
   }
 }
+

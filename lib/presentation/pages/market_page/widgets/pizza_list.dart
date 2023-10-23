@@ -1,10 +1,4 @@
-import 'dart:math';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:pizza_tz/domain/bloc/pizza_bloc/pizza_bloc.dart';
-import 'package:pizza_repository/pizza_repository.dart';
+part of '../market_page.dart';
 
 class PizzaListWidget extends StatefulWidget {
   const PizzaListWidget({super.key});
@@ -21,53 +15,97 @@ class ListPizzaState extends State<PizzaListWidget> {
     final List<Pizza> pizzas =
         context.select((PizzaBloc bloc) => bloc.state.pizzasInMarket);
 
-    return ListView.builder(
-      itemCount: pizzas.length,
-      itemBuilder: (context, index) {
-        final pizza = pizzas[index];
-        return GestureDetector(
-          onTap: () {
-            final pizzaBloc = context.read<PizzaBloc>();
-            pizzaBloc.add(AddPizzaInBasketEvent(index));
-          },
-          child: Container(
-            margin:
-                const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
-            height: 120.0,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(30),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.blue.withOpacity(0.1),
-                  spreadRadius: 1,
-                  blurRadius: 30,
-                  offset: const Offset(10, 20),
-                )
-              ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          flex: 1,
+          child: TextField(
+            decoration: const InputDecoration(
+              hintText: 'Поиск по имени',
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(),
             ),
-            child: Stack(
-              children: <Widget>[
-                Center(
-                  child: Row(
+            onChanged: (query) {
+              context.read<PizzaBloc>().add(
+                    SearchPizza(query),
+                  );
+              if (query.isEmpty) {
+                context.read<PizzaBloc>().add(
+                      LoadPizzasInMarketEvent(),
+                    );
+              }
+            },
+          ),
+        ),
+        Expanded(
+          flex: 8,
+          child: ListView.builder(
+            itemCount: pizzas.length,
+            itemBuilder: (context, index) {
+              final pizza = pizzas[index];
+              return GestureDetector(
+                onTap: () {
+                  final pizzaBloc = context.read<PizzaBloc>();
+                  pizzaBloc.add(AddPizzaInBasketEvent(index));
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(
+                      top: 30, left: 20, right: 20, bottom: 20),
+                  height: 120.0,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blue.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 30,
+                        offset: const Offset(10, 20),
+                      )
+                    ],
+                  ),
+                  child: Stack(
                     children: <Widget>[
-                      Container(
-                        // Картинка с пиццей
-                        height: 90,
-                        width: 90,
-                        padding: const EdgeInsets.all(10),
-                        child: Image.asset(getRandomPizzaImageFromAssets(),
-                            fit: BoxFit.fill),
+                      Center(
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              // Картинка с пиццей
+                              height: 90,
+                              width: 90,
+                              padding: const EdgeInsets.all(10),
+                              child: Image.asset(
+                                  getRandomPizzaImageFromAssets(),
+                                  fit: BoxFit.fill),
+                            ),
+                            Container(
+                              // Название пиццы
+                              padding: const EdgeInsets.all(10),
+                              child: Text(
+                                pizza.namePizza,
+                                textDirection: TextDirection.ltr,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: GoogleFonts.lato().fontFamily,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Container(
-                        // Название пиццы
-                        padding: const EdgeInsets.all(10),
+                        // Цена пиццы
+                        padding: const EdgeInsets.all(30),
+                        alignment: Alignment.centerRight,
                         child: Text(
-                          pizza.namePizza,
+                          "\$${pizza.pricePizza}",
                           textDirection: TextDirection.ltr,
-                          textAlign: TextAlign.left,
+                          textAlign: TextAlign.right,
                           style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 26,
+                              color: Colors.pink,
                               fontFamily: GoogleFonts.lato().fontFamily,
                               fontWeight: FontWeight.bold),
                         ),
@@ -75,26 +113,11 @@ class ListPizzaState extends State<PizzaListWidget> {
                     ],
                   ),
                 ),
-                Container(
-                  // Цена пиццы
-                  padding: const EdgeInsets.all(30),
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "\$${pizza.pricePizza}",
-                    textDirection: TextDirection.ltr,
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                        fontSize: 26,
-                        color: Colors.pink,
-                        fontFamily: GoogleFonts.lato().fontFamily,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 }
